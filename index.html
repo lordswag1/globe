@@ -15,38 +15,43 @@
   </style>
 </head>
 <body>
-  <!-- Add a container for the globe -->
+  <!-- Add Three.js via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
   <script>
-    // Scene setup
+    // Scene, Camera, Renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Create a sphere (globe)
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
+    // Load Texture for the Globe
     const textureLoader = new THREE.TextureLoader();
-    const material = new THREE.MeshBasicMaterial({
-      map: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/earth_atmos_2048.jpg')
-    });
+    const earthTexture = textureLoader.load('https://threejs.org/examples/textures/earth_atmos_2048.jpg');
+
+    // Create a Sphere Geometry (Globe)
+    const geometry = new THREE.SphereGeometry(1, 64, 64);
+    const material = new THREE.MeshStandardMaterial({ map: earthTexture });
     const globe = new THREE.Mesh(geometry, material);
     scene.add(globe);
 
-    // Set camera position
+    // Add Light to the Scene
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(5, 3, 5);
+    scene.add(light);
+
+    // Position the Camera
     camera.position.z = 3;
 
-    // Animation loop
+    // Animation Loop
     function animate() {
       requestAnimationFrame(animate);
-      globe.rotation.y += 0.002; // Rotate globe
+      globe.rotation.y += 0.01; // Rotate the globe
       renderer.render(scene, camera);
     }
-
     animate();
 
-    // Handle window resize
+    // Adjust on Window Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
