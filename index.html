@@ -3,82 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Rotating Globe with Markers</title>
+  <title>Rotating Globe</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
+      overflow: hidden; /* Prevent scrollbars */
+      background-color: #F3F2EC; /* Light beige background */
     }
-    canvas {
-      display: block;
+    #globeViz {
+      width: 400%; /* Make the globe 4 times wider */
+      height: 400vh; /* Make the globe 4 times taller */
     }
   </style>
+  <script src="https://unpkg.com/three@0.143.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
 </head>
 <body>
-  <!-- Three.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-  <!-- Globe Script -->
+  <div id="globeViz"></div>
+
   <script>
-    // Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    // Create the globe instance
+    const globeContainer = document.getElementById('globeViz');
+    const globe = Globe()(globeContainer)
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundColor('#F3F2EC'); // Set background color matching your preference
 
-    // Create the Globe
-    const textureLoader = new THREE.TextureLoader();
-    const earthTexture = textureLoader.load('https://threejs.org/examples/textures/earth_atmos_2048.jpg');
-    const geometry = new THREE.SphereGeometry(1, 64, 64);
-    const material = new THREE.MeshStandardMaterial({ map: earthTexture });
-    const globe = new THREE.Mesh(geometry, material);
-    scene.add(globe);
+    // Auto-rotate the globe
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = 0.35;
 
-    // Add Light
-    const light = new THREE.PointLight(0xffffff, 1);
-    light.position.set(5, 3, 5);
-    scene.add(light);
-
-    // Markers Data (Latitude, Longitude)
-    const markers = [
-      { country: "USA", lat: 37.7749, lon: -122.4194 },
-      { country: "UK", lat: 51.5074, lon: -0.1278 },
-      { country: "Japan", lat: 35.6895, lon: 139.6917 },
+    // Add markers for visited countries
+    const locations = [
+      { name: 'Thailand', lat: 15.87, lng: 100.99 },
+      { name: 'Italy', lat: 41.87, lng: 12.56 },
+      { name: 'Vietnam', lat: 14.06, lng: 108.22 },
+      { name: 'Cambodia', lat: 12.56, lng: 104.99 },
+      { name: 'Indonesia', lat: -0.79, lng: 113.92 },
+      { name: 'Turkey', lat: 38.96, lng: 35.24 },
+      { name: 'Malaysia', lat: 4.21, lng: 101.97 }
     ];
 
-    // Add Markers to Globe
-    const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-    const markerMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-    markers.forEach(({ lat, lon }) => {
-      const phi = (90 - lat) * (Math.PI / 180);
-      const theta = (lon + 180) * (Math.PI / 180);
+    globe
+      .pointsData(locations)
+      .pointLat('lat')
+      .pointLng('lng')
+      .pointColor(() => 'red')
+      .pointAltitude(0.02)
+      .pointLabel('name');
 
-      const x = Math.sin(phi) * Math.cos(theta);
-      const y = Math.cos(phi);
-      const z = Math.sin(phi) * Math.sin(theta);
-
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      marker.position.set(x, y, z);
-      globe.add(marker);
-    });
-
-    // Camera Position
-    camera.position.z = 3;
-
-    // Animation Loop
-    function animate() {
-      requestAnimationFrame(animate);
-      globe.rotation.y += 0.005; // Rotate the globe
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // Handle Window Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    // Add lighting for a more realistic appearance
+    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+    globe.scene().add(ambientLight);
   </script>
 </body>
 </html>
