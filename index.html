@@ -15,10 +15,6 @@
       left: 0;
       background-color: rgba(0, 0, 0, 0); /* Transparent background */
     }
-
-    canvas {
-      background-color: rgba(0, 0, 0, 0) !important; /* Make sure canvas is transparent */
-    }
   </style>
 
   <script src="//unpkg.com/globe.gl"></script>
@@ -33,6 +29,10 @@
     const world = new Globe(document.getElementById('globeViz'), { animateIn: false })
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png');
+
+    // Manually configure WebGL renderer for transparency
+    const renderer = world.scene().getContext().renderer;
+    renderer.setClearColor(0x000000, 0);  // Set clear color to transparent
 
     // Auto-rotate
     world.controls().autoRotate = true;
