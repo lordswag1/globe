@@ -8,7 +8,7 @@
     body {
       margin: 0;
       overflow: hidden; /* Prevent scrollbars */
-      background: transparent; /* Make the body background transparent */
+      background: transparent; /* Transparent body background */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -28,10 +28,12 @@
   <script>
     // Create the globe instance
     const globeContainer = document.getElementById('globeViz');
-    const globe = Globe()(globeContainer)
+    const globe = Globe({
+      rendererConfig: { alpha: true } // Enable transparent background for WebGL
+    })(globeContainer)
       .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-      .backgroundColor('rgba(0, 0, 0, 0)'); // Set transparent background for the globe
+      .backgroundColor(null); // Ensure globe background is transparent
 
     // Auto-rotate the globe
     globe.controls().autoRotate = true;
