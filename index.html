@@ -3,7 +3,7 @@
     body, html {
       margin: 0;
       height: 100%;
-      overflow: hidden;
+      overflow: hidden; /* Prevent scrollbars */
       background: none; /* No background color */
     }
 
@@ -16,7 +16,7 @@
     }
   </style>
 
-  <script src="//unpkg.com/globe.gl"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
 </head>
 
 <body>
@@ -26,17 +26,21 @@
     import * as THREE from 'https://esm.sh/three';
 
     const world = new Globe(document.getElementById('globeViz'), { animateIn: false })
-      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png');
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')  // Globe texture
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png'); // Bump map
 
-    // Auto-rotate
+    // Configure WebGL renderer to have transparent background
+    const renderer = world.scene().getContext().renderer;
+    renderer.setClearColor(0x000000, 0);  // Transparent background
+
+    // Auto-rotate the globe
     world.controls().autoRotate = true;
     world.controls().autoRotateSpeed = 0.35;
 
-    // Optional: Add cloud texture for extra effect
-    const CLOUDS_IMG_URL = './clouds.png'; // from https://github.com/turban/webgl-earth
-    const CLOUDS_ALT = 0.004;
-    const CLOUDS_ROTATION_SPEED = -0.006; // deg/frame
+    // Add clouds effect (optional)
+    const CLOUDS_IMG_URL = 'https://unpkg.com/three-globe/example/img/clouds.png'; // Clouds texture URL
+    const CLOUDS_ALT = 0.004; // Cloud height
+    const CLOUDS_ROTATION_SPEED = -0.006; // Cloud rotation speed
 
     new THREE.TextureLoader().load(CLOUDS_IMG_URL, cloudsTexture => {
       const clouds = new THREE.Mesh(
