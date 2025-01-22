@@ -1,10 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinning Globe</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
-      background: none; /* No background */
+      overflow: hidden; /* Prevent scrollbars */
+      background: none; /* Transparent background */
     }
+
     #globeContainer {
       position: absolute;
       top: 0;
@@ -15,25 +21,25 @@
   </style>
   <script src="https://unpkg.com/globe.gl"></script>
 </head>
-
 <body>
   <div id="globeContainer"></div>
 
   <script type="module">
-    import * as THREE from 'https://esm.sh/three';
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js';
 
-    // Create a Globe instance
+    // Initialize the Globe
     const globe = new Globe(document.getElementById('globeContainer'), { animateIn: true })
-      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg') // Earth texture
-      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')     // Elevation map
-      .backgroundColor(null); // Transparent background
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundColor(null); // Make the background transparent
+
+    // WebGL renderer configuration for transparency
+    const renderer = globe.scene().getContext().renderer;
+    renderer.setClearColor(0x000000, 0); // Transparent background
 
     // Auto-rotate configuration
     globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = 0.35;
-
-    // Optional: Add atmosphere effect
-    const renderer = globe.scene().getContext().renderer;
-    renderer.setClearColor(0x000000, 0); // Ensure transparent WebGL canvas
   </script>
 </body>
+</html>
