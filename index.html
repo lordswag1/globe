@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spinning Globe</title>
+  <title>Transparent Spinning Globe</title>
   <style>
     body {
       margin: 0;
       overflow: hidden; /* Prevent scrollbars */
-      background: none; /* Transparent background */
+      background: transparent; /* Ensure page background is transparent */
     }
-
     #globeContainer {
       position: absolute;
       top: 0;
@@ -19,25 +18,23 @@
       height: 100vh;
     }
   </style>
+  <!-- Include Globe.gl -->
   <script src="https://unpkg.com/globe.gl"></script>
 </head>
 <body>
   <div id="globeContainer"></div>
 
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js';
-
+  <script>
     // Initialize the Globe
-    const globe = new Globe(document.getElementById('globeContainer'), { animateIn: true })
-      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-      .backgroundColor(null); // Make the background transparent
+    const globe = new Globe()
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg') // Earth texture
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')     // Topography map
+      .backgroundColor('rgba(0, 0, 0, 0)'); // Transparent background
 
-    // WebGL renderer configuration for transparency
-    const renderer = globe.scene().getContext().renderer;
-    renderer.setClearColor(0x000000, 0); // Transparent background
+    // Attach the globe to the container
+    document.getElementById('globeContainer').appendChild(globe);
 
-    // Auto-rotate configuration
+    // Enable auto-rotation
     globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = 0.35;
   </script>
