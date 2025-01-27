@@ -20,10 +20,8 @@
 </head>
 <body>
   <div id="globeViz"></div>
-  <script type="module">
-    import * as THREE from 'https://esm.sh/three';
-
-    const world = new Globe(document.getElementById('globeViz'), { animateIn: false })
+  <script>
+    const world = Globe()(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundColor(null) // Set background to transparent
